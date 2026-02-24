@@ -1,0 +1,47 @@
+from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from langchain_huggingface import HuggingFaceEmbeddings
+from app.rag_pipeline import RAGPipeline
+from app.ingestion import DocumentIngestor
+import json
+from typing import List, Dict, Any
+
+app = FastAPI()
+
+# تحميل الموديل مرة واحدة (Singleton)
+print("⏳ Loading Embedding Model...")
+shared_embedding_model = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+print("✅ Model Loaded.")
+
+pipeline = RAGPipeline(embedding_model=shared_embedding_model)
+ingestor = DocumentIngestor(embedding_model=shared_embedding_model)
+
+# تعريف شكل البيانات القادمة من Gradio
+class ChatRequest(BaseModel):
+    question: str
+    history: List[Dict[str, str]] = [] # قائمة الرسائل السابقة
+
+@app.post("/ask_stream")
+def ask_stream(req: ChatRequest):
+    # نمرر السؤال + التاريخ للبايبلاين
+    answer_generator, sources = pipeline.answer_stream(req.question, req.history)
+
+    def stream_response():
+        # نرسل المصادر أولاً
+        yield json.dumps({"sources": sources}) + "\n"
+        # ثم نرسل التوكنز
+        for chunk in answer_generator:
+            yield chunk
+
+    return StreamingResponse(stream_response(), media_type="text/plain")
+
+@app.post("/upload")
+def upload(file_path: str):
+    try:
+        count = ingestor.ingest(file_path)
+        return {"chunks_indexed": count}
+    except Exception as e:
+        return {"error": str(e)}
