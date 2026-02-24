@@ -11,15 +11,15 @@ The **Smart Contract AI** is an advanced Retrieval-Augmented Generation (RAG) pi
 
 Unlike standard chatbots, this system is built with **strict guardrails against hallucinations**, ensuring that every generated answer is strictly grounded in the provided legal text, complete with source citations.
 
-##  Key Features
-* ** Multi-Format Document Ingestion:** Robust extraction from both `.pdf` and `.docx` files with automated chunking using `RecursiveCharacterTextSplitter`.
-* ** High-Fidelity Vector Storage:** Local, secure embedding storage using **ChromaDB** and HuggingFace's `all-MiniLM-L6-v2` embedding model.
-* ** Zero-Hallucination Guardrails:** Implements a strict `SIMILARITY_THRESHOLD` and engineered prompts. If the answer is not in the contract, the system explicitly states: *"Not found in document"*.
-* ** Dual-Serving Architecture:** * Custom **FastAPI** endpoints for tailored front-end integration.
+## Key Features
+* **Multi-Format Document Ingestion:** Robust extraction from both `.pdf` and `.docx` files with automated chunking using `RecursiveCharacterTextSplitter`.
+* **High-Fidelity Vector Storage:** Local, secure embedding storage using **ChromaDB** and HuggingFace's `all-MiniLM-L6-v2` embedding model.
+* **Zero-Hallucination Guardrails:** Implements a strict `SIMILARITY_THRESHOLD` and engineered prompts. If the answer is not in the contract, the system explicitly states: *"Not found in document"*.
+* **Dual-Serving Architecture:** * Custom **FastAPI** endpoints for tailored front-end integration.
   * Standardized **LangServe** routes exposing LangChain Expression Language (LCEL) chains with built-in playgrounds.
-* ** Contextual Memory:** Maintains a conversation state history (rolling window) to handle follow-up questions effectively.
-* ** LLM-as-a-Judge Evaluation:** Features an automated evaluation pipeline inspired by the NVIDIA DLI framework, utilizing **DeepSeek R1** to score the RAG Triad (Context Relevance, Faithfulness, and Answer Relevance).
-* ** Clean UI:** A modular, user-friendly interface built with **Gradio**, separating document indexing from the chat experience.
+* **Contextual Memory:** Maintains a conversation state history (rolling window) to handle follow-up questions effectively.
+* **LLM-as-a-Judge Evaluation:** Features an automated evaluation pipeline inspired by the NVIDIA DLI framework, utilizing **DeepSeek R1** to score the RAG Triad (Context Relevance, Faithfulness, and Answer Relevance).
+* **Clean UI:** A modular, user-friendly interface built with **Gradio**, separating document indexing from the chat experience.
 
 ---
 
